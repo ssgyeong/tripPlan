@@ -1,8 +1,20 @@
-INSERT INTO keyword (keyword) VALUES ('혼밥');
-INSERT INTO keyword (keyword) VALUES ('커피');
-INSERT INTO keyword (keyword) VALUES ('유적지');
+INSERT INTO keyword (keyword) VALUES ('호캉스');
+INSERT INTO keyword (keyword) VALUES ('맛집');
 
-INSERT INTO area (area) VALUES ('부산');
-INSERT INTO area (area) VALUES ('인천');
-INSERT INTO area (area) VALUES ('서울');
-
+INSERT INTO area (area) VALUES ('서울특별시');
+INSERT INTO area (area) VALUES ('부산광역시');
+INSERT INTO area (area) VALUES ('대구광역시');
+INSERT INTO area (area) VALUES ('인천광역시');
+INSERT INTO area (area) VALUES ('광주광역시');
+INSERT INTO area (area) VALUES ('대전광역시');
+INSERT INTO area (area) VALUES ('울산광역시');
+INSERT INTO area (area) VALUES ('세종특별자치시');
+INSERT INTO area (area) VALUES ('경기도');
+INSERT INTO area (area) VALUES ('강원특별자치도');
+INSERT INTO area (area) VALUES ('충청북도');
+INSERT INTO area (area) VALUES ('충청남도');
+INSERT INTO area (area) VALUES ('전북특별자치도');
+INSERT INTO area (area) VALUES ('전라남도');
+INSERT INTO area (area) VALUES ('경상북도');
+INSERT INTO area (area) VALUES ('경상남도');
+INSERT INTO area (area) VALUES ('제주특별자치도');
