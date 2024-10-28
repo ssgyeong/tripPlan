@@ -27,7 +27,6 @@ public class PostService {
 
     public PostDTO getOnePost(Long postId) {
         Post post = dao.getOnePost(postId);
-//        Optional<Post> post = postRepository.findById(id);
         if (ObjectUtils.isEmpty(post)) {
             return null;
         }
@@ -42,23 +41,7 @@ public class PostService {
         dao.updatePost(dto);
     }
 
-//    public List<PostDTO> findAllPost() {
-//        return postRepository.findAll().stream().map(x->PostDTO.fromEntity(x)).toList();
-//    }
-
-//    public void insertPost(PostDTO dto) {
-//        postRepository.save(PostDTO.fromDTO(dto));
-//    }
-
-//    public PostDTO getOnePost(Long id) {
-//        Optional<Post> post = postRepository.findById(id);
-//        if (ObjectUtils.isEmpty(post)) {
-//            return null;
-//        }
-//        return PostDTO.fromEntity(post.get());
-//    }
-
-//    public void deletePost(Long id) {
-//        postRepository.deleteById(id);
-//    }
+    public void calculateLikes(Long id) {
+        dao.calculateLikes(id);
+    }
 }
