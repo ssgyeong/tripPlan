@@ -1,17 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:th="www.thymeleaf.org">
-<head>
+<html xmlns:th="www.thymeleaf.org"
+      xmlns:layout="www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 	<meta charset="UTF-8">
 	<title>Title</title>
-</head>
+    <th:block layout:fragment="css"></th:block>
+    <th:block layout:fragment="script"></th:block>
+
 <body>
-<div>
+<div layout:fragment="content" class="content">
+    <h2 class="com-title">자유게시판</h2>
     <form id="form" th:action="@{/community/new}">
         <table class="table">
             <thead>
             <tr>
                 <th scope="col">글번호</th>
-                <th scope="col">여행장소</th>
                 <th scope="col">제목</th>
                 <th scope="col">작성자</th>
                 <th scope="col">작성일</th>
@@ -22,7 +25,6 @@
             <div>
                 <tr th:each="post : ${posts}" th:object="${post}">
                     <th th:text="*{postId}"></th>
-                    <td th:text="*{postId}">부산</td>
                     <td>
                         <a th:href="@{/community/{id}(id=*{postId})}" th:text="*{postTitle}">부산 여행 추천해요</a>
                     </td>
@@ -35,8 +37,9 @@
             </tbody>
         </table>
         <input type="submit" value="글쓰기" id="newPost">
+        <button id="GoBackToMain"><a href="/main">메인</a></button>
         <br>
-        <a href="/main">메인 화면으로 돌아가기</a>
+
     </form>
 </div>
 
