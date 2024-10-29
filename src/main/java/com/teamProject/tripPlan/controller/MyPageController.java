@@ -2,7 +2,9 @@ package com.teamProject.tripPlan.controller;
 
 import com.teamProject.tripPlan.dto.PostDTO;
 import com.teamProject.tripPlan.dto.UsersDTO;
+import com.teamProject.tripPlan.entity.Accommodation;
 import com.teamProject.tripPlan.entity.Travel;
+import com.teamProject.tripPlan.entity.TravelAccommodation;
 import com.teamProject.tripPlan.repository.PostRepository;
 import com.teamProject.tripPlan.repository.UserRepository;
 import com.teamProject.tripPlan.service.MyPageService;
@@ -19,9 +21,11 @@ public class MyPageController {
     @Autowired
     MyPageService myPageService;
 
-    @GetMapping("{id}")
+    @GetMapping("{userId}")
     public String myPageMain(Model model,
-                             @PathVariable("id")Long id) {
+                             @PathVariable("userId")String userId) {
+        System.out.println(userId);
+        Long id = myPageService.findUserId(userId);
         UsersDTO user = myPageService.findLoginUser(id);
         model.addAttribute("dto", user);
         List<Travel> travels = myPageService.findUserList(id);
@@ -29,25 +33,28 @@ public class MyPageController {
         return "/myPage/myPageMain";
     }
 
-    @GetMapping("/list/{id}")
+    @GetMapping("/list/{userId}")
     public String myTravelList(Model model,
-                               @PathVariable("id")Long id) {
+                               @PathVariable("userId") String userId) {
+        Long id = myPageService.findUserId(userId);
         List<Travel> travels = myPageService.findUserList(id);
         model.addAttribute("list", travels);
         return "/myPage/myTravelList";
     }
 
-    @GetMapping("/info/{id}")
+    @GetMapping("/info/{userId}")
     public String myInfo(Model model,
-                         @PathVariable("id")Long id) {
+                         @PathVariable("userId")String userId) {
+        Long id = myPageService.findUserId(userId);
         UsersDTO dto = myPageService.findLoginUser(id);
         model.addAttribute("dto", dto);
         return "/myPage/myInfo";
     }
 
-    @GetMapping("/update/{id}")
+    @GetMapping("/update/{userId}")
     public String myInfoUpdate(Model model,
-                               @PathVariable("id")Long id) {
+                               @PathVariable("userId")String userId) {
+        Long id = myPageService.findUserId(userId);
         UsersDTO dto = myPageService.findLoginUser(id);
         model.addAttribute("dto", dto);
         return "/myPage/myInfoUpdate";
@@ -60,16 +67,19 @@ public class MyPageController {
         return redirectUrl;
     }
 
-    @GetMapping("/community/{id}")
+    @GetMapping("/community/{userId}")
     public String myCommunity(Model model,
-                              @PathVariable("id")Long id) {
+                              @PathVariable("userId")String userId) {
+        Long id = myPageService.findUserId(userId);
         UsersDTO dto = myPageService.findLoginUser(id);
         model.addAttribute("dto", dto);
         return "myPage/myCommunity";
     }
 
-    @GetMapping("/delete/{id}")
-    public String infoDelete(@PathVariable("id")Long id){
+    @GetMapping("/delete/{userId}")
+    public String infoDelete(
+            @PathVariable("userId")String userId) {
+        Long id = myPageService.findUserId(userId);
         myPageService.deleteInfo(id);
         return "redirect:/";
     }
