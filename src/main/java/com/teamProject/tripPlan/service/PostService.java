@@ -22,11 +22,13 @@ public class PostService {
     PostDAO dao;
 
     public List<PostDTO> findAllPost() {
-        return dao.findAllPost().stream().map(x->PostDTO.fromEntity(x)).toList();
+        // 키워드를 포함하여 모든 게시물을 가져오는 메소드 호출
+        return dao.findAllPost().stream().map(PostDTO::fromEntity).toList();
     }
 
     public PostDTO getOnePost(Long postId) {
         Post post = dao.getOnePost(postId);
+
         if (ObjectUtils.isEmpty(post)) {
             return null;
         }
@@ -43,5 +45,11 @@ public class PostService {
 
     public void calculateLikes(Long id) {
         dao.calculateLikes(id);
+    }
+
+    public List<PostDTO> findPostsByKeyword(List<String> keywords) {
+        return dao.findPostsByKeywords(keywords).stream()
+                .map(PostDTO::fromEntity)
+                .toList();
     }
 }
