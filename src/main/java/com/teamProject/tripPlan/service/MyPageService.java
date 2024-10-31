@@ -4,7 +4,9 @@ import com.teamProject.tripPlan.dao.MyPageDAO;
 import com.teamProject.tripPlan.dto.PostDTO;
 import com.teamProject.tripPlan.dto.UsersDTO;
 import com.teamProject.tripPlan.entity.*;
+import com.teamProject.tripPlan.repository.MyListRepository;
 import com.teamProject.tripPlan.repository.PostRepository;
+import com.teamProject.tripPlan.repository.TravelDateRepository;
 import com.teamProject.tripPlan.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
@@ -19,20 +21,18 @@ public class MyPageService {
     @Autowired
     MyPageDAO myPageDAO;
     @Autowired
-    EntityManager em;
+    TravelDateRepository travelDateRepository;
+    @Autowired
+    MyListRepository myListRepository;
 
     public UsersDTO findLoginUser(Long id) {
         Users users = myPageDAO.getOneUser(id);
         return UsersDTO.fromEntity(users);
     }
 
-    public PostDTO findUserPosts(Long id) {
-        Post post = myPageDAO.getUserPost(id);
-        return PostDTO.fromEntity(post);
-    }
-
-    public void updateInfo(UsersDTO dto) {
-        myPageDAO.updateInfo(dto);
+    public UsersDTO updateInfo(UsersDTO dto) {
+        Users users = myPageDAO.updateInfo(dto);
+        return UsersDTO.fromEntity(users);
     }
 
     public void deleteInfo(Long id) {
@@ -44,13 +44,21 @@ public class MyPageService {
         return travels;
     }
 
-    public List<Accommodation> findUserAccommodation(Long id) {
-        List<Accommodation> accommodation = myPageDAO.findUserAccommodation(id);
-        return accommodation;
-    }
-
     public Long findUserId(String userId) {
         Long id = myPageDAO.findUserId(userId);
         return id;
+    }
+
+    // 트래블 데이터 저장 테스트용
+    public TravelDates insertDate(TravelDates dates) {
+        TravelDates dates1 = new TravelDates();
+        dates1.setDeparture_date(dates.getDeparture_date());
+        dates1.setArrival_date(dates.getArrival_date());
+        travelDateRepository.save(dates1);
+        return dates1;
+    }
+
+    public List<MyList> findAllMyLists(){
+        return myListRepository.findAll();
     }
 }
