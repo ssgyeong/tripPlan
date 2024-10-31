@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/js/jQuery.js"></script>
+</head>
+<body>
+<form th:action="@{/typeTest/insertUsersAnswer}" method="post" id="submit_answer">
+    <div th:object="${question}">
+        <div class="question_num">
+            <h2>Q[[ *{questionId} ]]</h2>
+            <input type="hidden" name="questionId" th:value="*{questionId}">
+        </div>
+        <div class="question_text">
+            [[ *{questionText} ]]
+        </div>
+
+        <div>
+            <input type="hidden" name="optionId" id="selectedOptionId">
+            <button type="button" class="btn_answer" id="btn_mbti_answer1" th:data-option-id="${answer1.optionId}">[[ ${answer1.optionText} ]]</button>
+            <button type="button" class="btn_answer" id="btn_mbti_answer2" th:data-option-id="${answer2.optionId}">[[ ${answer2.optionText} ]]</button>
+        <input type="hidden" th:value="*{questionId}">
+    </div>
+</form>
+
+
+</body>
+<script th:inline="javascript">
+    $(document).ready(function(){
+        console.log("JavaScript loaded successfully");
+
+        $(document).on("click", "#btn_mbti_answer1, #btn_mbti_answer2", function() {
+            let optionId = $(this).data("option-id"); // data 속성에서 optionId 가져오기
+            $("input[name='optionId']").val(optionId); // 숨겨진 필드에 optionId 값 설정
+            $(this).closest("form").submit(); // 폼 제출
+        });
+    });
+</script>
+
+</html>
