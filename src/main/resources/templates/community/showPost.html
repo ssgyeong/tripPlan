@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- 전체 적용될 css -->
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/showPost.css}">
+    </th:block>
+
+    <!-- 전체 적용될 스크립트 -->
+    <th:block layout:fragment="script"></th:block>
+</head>
+<body>
+<div layout:fragment="content" class="content">
+    <h1 th:text="${dto.postTitle}"></h1>
+    <p th:text="${dto.users.userNickname}"></p>
+    <p>
+        <strong>키워드:</strong>
+        <span th:each="keyword : ${dto.keyword}" th:text="${keyword.keyword}">키워드</span>
+    </p>
+    <div th:text="${dto.postContent}"></div>
+    <a th:href="@{/community/{id}/update(id=${dto.postId})}" class="btn btn-primary">수정</a>
+    <a th:href="@{/community/{id}/delete(id=${dto.postId})}">
+        <input class="btn btn-danger" type="button" value="삭제하기">
+    </a>
+    <br><br>
+
+    <div class="card m-2" th:each="comment : ${dto.comments}" th:object="${comment}">
+        <div class="card-header">
+            <span th:text="${dto.users.userNickname}">닉네임</span>
+        </div>
+        <div class="card-body">
+            <p class="card-text" th:text="*{commentContent}">댓글 내용</p>
+        </div>
+    </div>
+
+    <form th:action="@{/community/{id}/comments(id=${dto.postId})}" method="post">
+        <div class="m-2">
+            <label class="form-label">닉네임</label>
+            <p th:text="${dto.users.userNickname}"></p>
+        </div>
+        <div class="m-2">
+            <label class="form-label">댓글 내용</label>
+            <textarea class="form-control" rows="3" id="new-comment-body" name="commentContent"></textarea>
+        </div>
+        <button type="button" id="comment-create-btn" class="btn btn-primary">댓글 작성</button>
+    </form>
+
+    <script src="/js/jQuery.js"></script>
+    <script>
+        function confirmDeletePost() {
+            if (confirm("정말 삭제하시겠습니까?")) {
+                const postId = '${dto.postId}';
+                const url = '/community/' + postId + '/delete';
+
+                fetch(url, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '${_csrf.token}' // CSRF 토큰 추가
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        location.href = '/community'; // 삭제 후 목록 페이지로 리다이렉트
+                    } else {
+                        alert("삭제 실패: " + response.statusText); // 에러 메시지
+                    }
+                }).catch(error => {
+                    alert("삭제 요청 중 오류 발생: " + error); // 예외 처리
+                });
+            }
+        }
+
+        $(document).ready(function() {
+            // 댓글 작성 기능
+            $("#comment-create-btn").on("click", function(event) {
+                event.preventDefault();
+                if ($("#new-comment-body").val() === "") {
+                    alert("내용 입력하세요");
+                    $("#new-comment-body").focus();
+                    return;
+                }
+                $("form").submit();
+            });
+        });
+    </script>
+</div>
+</body>
+</html>
