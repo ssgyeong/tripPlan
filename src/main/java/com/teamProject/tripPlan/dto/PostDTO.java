@@ -1,13 +1,12 @@
 package com.teamProject.tripPlan.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.teamProject.tripPlan.entity.Keyword;
 import com.teamProject.tripPlan.entity.Post;
 import com.teamProject.tripPlan.entity.Travel;
 import com.teamProject.tripPlan.entity.Users;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -15,32 +14,29 @@ import java.util.List;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostDTO {
     private Long postId;
     private String postTitle;
     private String postContent;
-    private LocalDateTime postDate;
     private int likes;
     private Users users;
     private List<CommentDTO> comments = new ArrayList<>();
     private Travel travel;
-
-    // 추가: keywords 필드
-    private List<Keyword> keywords = new ArrayList<>();
+    private Keyword keyword;
 
     public static PostDTO fromEntity(Post post) {
         return new PostDTO(
                 post.getPostId(),
                 post.getPostTitle(),
                 post.getPostContent(),
-                post.getPostDate(),
                 post.getLikes(),
                 post.getUsers(),
                 post.getComments().stream().map(CommentDTO::fromEntity).toList(),
                 post.getTravel(),
-                post.getKeywords()  // 키워드 추가
+                post.getKeyword() // Keyword 객체 리스트를 그대로 사용
         );
     }
 
@@ -49,9 +45,16 @@ public class PostDTO {
         post.setPostId(dto.getPostId());
         post.setPostTitle(dto.getPostTitle());
         post.setPostContent(dto.getPostContent());
-        post.setPostDate(dto.getPostDate());
         post.setLikes(dto.getLikes());
-        post.setKeywords(dto.getKeywords()); // 키워드 설정 추가
+
+        // Keyword 객체 리스트 설정
+        post.setKeyword(dto.getKeyword()); // 직접 설정
+
+        // Travel 객체 설정
+        Travel travel = new Travel();
+        travel.setUsers(dto.getUsers()); // 사용자를 Travel에 설정
+        post.setTravel(travel);
+
         return post;
     }
 }
