@@ -13,11 +13,14 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
     private String commentNickname;
-    @Column(nullable = false, length = 500)
     private String commentContent;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "suggestion_id")
+    private Suggestion suggestion;
 
 }
