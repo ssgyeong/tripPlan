@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="/js/jQuery.js"></script>
+    <th:block layout:fragment="css">
+        <link rel="stylesheet" th:href="@{/css/style.css}">
+    </th:block>
 </head>
 <body>
     <form th:action="@{/typeTest/question/{questionId}(questionId=${questionId})}" method="get">
