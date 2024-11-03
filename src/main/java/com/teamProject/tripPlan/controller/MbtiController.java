@@ -34,16 +34,9 @@ public class MbtiController {
 
     @GetMapping("")
     public String testMainForm(Model model) {
-//        model.addAttribute("questionLists", questionService.findAll());
         model.addAttribute("questionId", 1);
         return "mbti/testMainForm";
     }
-
-//    @GetMapping("question")
-//    public String testQuestion(Model model) {
-//        model.addAttribute("questions", questionRepository.findAll());
-//        return "mbti/Question";
-//    }
 
     @GetMapping("question/{questionId}")
     public String testQuestion(@PathVariable("questionId") Long questionId, Model model) {
@@ -103,19 +96,7 @@ public class MbtiController {
         }
 
     }
-
-//    @PostMapping("insertUsersAnswer")
-//    public String insertUsersAnswer(UsersMbtiAnswerDTO dto, @RequestParam("questionId") Long questionId) {
-//        log.info(questionId.toString());
-//        Users users = queryService.findOneUser("froggg"); // 로그인한 아이디로 변경
-//        usersMbtiAnswerService.insertAnswer(users.getUserNo(), questionId, dto);
-////        UsersMbtiAnswer usersMbtiAnswer = usersMbtiAnswerService.findById(dto.getMbtiQuestion().getQuestionId());
-//
-//        Long nextQuestionId = questionId + 1; // 다음 질문 ID 설정
-//        return "redirect:/typeTest/question/" + nextQuestionId;
-////        return "mbti/question";
-//    }
-
+    
     @GetMapping("result")
     public String resultPage(Model model, Principal principal, RedirectAttributes redirectAttributes, HttpSession session) {
         model.addAttribute("results", mbtiTestResultService.findAll());
@@ -157,7 +138,6 @@ public class MbtiController {
         log.info("myResultType = " + myResultType);
 
         MbtiTestResult mbtiTestResult = mbtiTestResultService.findByResultType(myResultType);
-//        mbtiTestResult.getDescription()
 
         model.addAttribute("myResult", mbtiTestResult);
         users.setResultType(myResultType);
