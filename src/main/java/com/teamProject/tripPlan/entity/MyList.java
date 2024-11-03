@@ -18,10 +18,6 @@ public class MyList {
     private String placeName;
     private String placeAddress;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "travel_id")
-    private Travel travel;
-
     public MyList(String placeName, String addressName) {}
 
     public void setTravelId(Long travelId) {
