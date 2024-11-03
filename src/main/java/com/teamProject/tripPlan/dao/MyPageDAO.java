@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,6 +16,8 @@ import java.util.List;
 public class MyPageDAO {
     @Autowired
     EntityManager em;
+    @Autowired
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public Users getOneUser(Long id) {
         Users users = em.find(Users.class, id);
@@ -29,6 +32,7 @@ public class MyPageDAO {
     public Users updateInfo(UsersDTO dto) {
         Users users = em.find(Users.class, dto.getUserNo());
         users.setUserId(dto.getUserId());
+        users.setUserPassword(bCryptPasswordEncoder.encode(dto.getUserPassword()));
         users.setUserName(dto.getUserName());
         users.setUserNickname(dto.getUserNickname());
         users.setUserEmail(dto.getUserEmail());
@@ -51,7 +55,7 @@ public class MyPageDAO {
         return id;
     }
 
-    // 유저에 해당하는 여행 계획 리스트 가져오기 (키워드, 지역, 날짜)
+    // 유저에 해당하는 Travel 리스트 가져오기
     public List<Travel> findUserList(Long id) {
         String sql = "SELECT t FROM Travel t " +
                 "JOIN t.users u " +
@@ -71,5 +75,17 @@ public class MyPageDAO {
         Query query = em.createQuery(sql);
         List<Accommodation> accommodation = query.getResultList();
         return accommodation;
+    }
+
+
+    public List<Place> findPlace(Long id) {
+        String sql = "SELECT p FROM Place p " +
+                "JOIN p.travel t " +
+                "ON t.travelId = p.travel.travelId " +
+                "JOIN t.users u " +
+                "ON t.users.userNo = " + id;
+        Query query = em.createQuery(sql);
+        List<Place> places = query.getResultList();
+        return places;
     }
 }
