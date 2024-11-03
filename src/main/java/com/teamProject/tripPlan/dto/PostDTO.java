@@ -26,6 +26,10 @@ public class PostDTO {
     private List<CommentDTO> comments = new ArrayList<>();
     private Travel travel;
     private Keyword keyword;
+    private LocalDateTime insertedDate;
+    private LocalDateTime updatedDate;
+
+    private List<PlaceDTO> places = new ArrayList<>(); // 빈 리스트로 초기화
 
     public static PostDTO fromEntity(Post post) {
         return new PostDTO(
@@ -36,7 +40,10 @@ public class PostDTO {
                 post.getUsers(),
                 post.getComments().stream().map(CommentDTO::fromEntity).toList(),
                 post.getTravel(),
-                post.getKeyword() // Keyword 객체 리스트를 그대로 사용
+                post.getKeyword(), // Keyword 객체 리스트를 그대로 사용
+                post.getInsertedDate(),
+                post.getUpdatedDate(),
+                post.getPlaces() != null ? post.getPlaces().stream().map(PlaceDTO::fromEntity).toList() : new ArrayList<>()
         );
     }
 
