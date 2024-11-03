@@ -1,12 +1,10 @@
 package com.teamProject.tripPlan.controller;
 
 import com.teamProject.tripPlan.dto.CommentDTO;
+import com.teamProject.tripPlan.dto.SuggestionCommentDTO;
 import com.teamProject.tripPlan.dto.SuggestionDTO;
 import com.teamProject.tripPlan.entity.Users;
-import com.teamProject.tripPlan.service.CommentService;
-import com.teamProject.tripPlan.service.QueryService;
-import com.teamProject.tripPlan.service.SuggestionService;
-import com.teamProject.tripPlan.service.UsersService;
+import com.teamProject.tripPlan.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,12 +29,22 @@ public class SuggestionController {
     UsersService usersService;
 
     @Autowired
-    CommentService commentService;
+    SuggestionCommentService commentService;
 
     @GetMapping("/box")
-    public String suggestionBoxView(Model model) {
+    public String suggestionBoxView(Model model, Principal principal) {
         List<SuggestionDTO> suggestions = suggestionService.findAllSuggestion();
         model.addAttribute("suggestions", suggestions);
+        Users users = queryService.findOneUser(principal.getName());
+        for (SuggestionDTO dto : suggestions) {
+            if (dto.getUsers().getUserNickname().equals(users.getUserNickname())) {
+                dto.setOpenType(1);
+            } else if (users.getUserNickname().equals("admin")) {
+                dto.setOpenType(1);
+            } else {
+                dto.setOpenType(0);
+            }
+        }
         return "suggestion/suggestionBox";
     }
 
@@ -45,16 +53,6 @@ public class SuggestionController {
         model.addAttribute("dto", new SuggestionDTO());
         Users users = queryService.findOneUser(principal.getName());
         List<SuggestionDTO> suggestionDTOS = suggestionService.findAllSuggestion();
-//        List<Suggestion> suggestions = suggestionService.findAllSuggestion().stream().map(x->SuggestionDTO.fromDTO(x)).toList();
-        for (SuggestionDTO dto : suggestionDTOS) {
-            if (!dto.getUsers().getUserNickname().equals(users.getUserNickname())) {
-                dto.setOpenType(0);
-            }
-            if (!users.getUserNickname().equals("admin")) {
-                dto.setOpenType(0);
-            }
-        }
-
         model.addAttribute("myNickname", users.getUserNickname());
         return "suggestion/newSuggestion";
     }
@@ -62,29 +60,33 @@ public class SuggestionController {
     @PostMapping("create")
     public String createSuggestion(SuggestionDTO dto, Model model, Principal principal) {
         Users users = queryService.findOneUser(principal.getName());
-//        model.addAttribute("myNickname", users.getUserNickname());
         usersService.insertSuggestion(users.getUserNo(), dto);
         // 로그인한 사람의 아이디가 동일한 사람 찾기
         return "redirect:/suggestion/box";
     }
 
     @GetMapping("{id}")
-    public String showOneSuggestion(@PathVariable("id") Long id, Model model) {
+    public String showOneSuggestion(@PathVariable("id") Long id, Model model, Principal principal) {
         SuggestionDTO dto = suggestionService.getOneSuggestion(id);
         model.addAttribute("dto", dto);
+        Users users = queryService.findOneUser(principal.getName());
+        model.addAttribute("myNickname", users.getUserNickname());
         return "suggestion/showSuggestion";
     }
 
     @GetMapping("{id}/delete")
-    public String deleteSuggestion(@PathVariable("id") Long id, RedirectAttributes redirectAttributes) {
+    @ResponseBody
+    public String deleteSuggestion(@PathVariable("id") Long id) {
+        System.out.println("Deleting suggestion with ID: " + id);
         suggestionService.deleteSuggestion(id);
-        redirectAttributes.addFlashAttribute("msg", "정상적으로 삭제되었습니다.");
-        return "redirect:/suggestion/box";
+        return "삭제 성공";
     }
 
     @GetMapping("{id}/update")
     public String viewUpdateSuggestion(Model model, @PathVariable("id") Long suggestionId) {
+        model.addAttribute("suggestionId", suggestionId);
         model.addAttribute("dto", suggestionService.getOneSuggestion(suggestionId));
+
         return "/suggestion/updateSuggestion";
     }
 
@@ -92,14 +94,18 @@ public class SuggestionController {
     public String updateSuggestion(SuggestionDTO dto) {
         System.out.println(dto);
         suggestionService.updateSuggestion(dto);
-        return "redirect:/suggestion/box";
+        return "redirect:/suggestion/" + dto.getSuggestionId();
     }
 
     ///////////////////////////////////// 댓글 처리 //////////////////////////////////////////
     @PostMapping("{id}/comments")
-    public String insertSuggestionComment(CommentDTO dto, @PathVariable("id") Long suggestionId) {
+    public String insertSuggestionComment(SuggestionCommentDTO dto, @PathVariable("id") Long suggestionId, Principal principal) {
         System.out.println(dto.toString());
+        Users users = queryService.findOneUser(principal.getName());
+        String loggedInNickname = users.getUserNickname();
+        dto.setCommentNickname(loggedInNickname);
         commentService.insertSuggestionComment(suggestionId, dto);
+
         return "redirect:/suggestion/" + suggestionId;
     }
 
@@ -124,7 +130,7 @@ public class SuggestionController {
     @PostMapping("{suggestionId}/comments/{commentId}")
     public String updateComment(@PathVariable("suggestionId") Long suggestionId,
                                 @PathVariable("commentId") Long commentId,
-                                CommentDTO dto) {
+                                SuggestionCommentDTO dto) {
         dto.setCommentId(commentId);
         commentService.updateComment(dto);
         return "redirect:/suggestion/" + suggestionId;
