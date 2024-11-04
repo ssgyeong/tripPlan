@@ -9,48 +9,68 @@
 	<th:block layout:fragment="script"></th:block>
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" th:href="@{css/style.css}">
-<!-- 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey={45eba8a04e39c19ff52df76714fcfc05}" async></script> -->
-	<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=6ebcca49838b45dd8d299c3c5afed9d1&libraries=services"></script>
+	<script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=2d991f9ecef3922716fbb7e5bfdcc6f5&libraries=services"></script>
 	<script th:src="@{js/jQuery.js}"></script>
 </head>
 
 <body>
-<div layout:fragment="content" class="content">
-	<div th:if="${userType}!=null">
-		<span><b>[[ ${userNickname} ]]님의 여행 성향 테스트 결과 추전 지역</b></span>
-		<p>1. [[ ${userType.recommendArea1} ]]-[[ ${userType.areaName1} ]]</p>
-		<p>2. [[ ${userType.recommendArea2} ]]-[[ ${userType.areaName2} ]]</p>
-	</div>
+	<div layout:fragment="content" class="content">
+		<div th:if="${userType}!=null">
+			<span><b>[[ ${userNickname} ]]님의 여행 성향 테스트 결과 추전 지역</b></span>
+			<p>1. [[ ${userType.recommendArea1} ]]-[[ ${userType.areaName1} ]]</p>
+			<p>2. [[ ${userType.recommendArea2} ]]-[[ ${userType.areaName2} ]]</p>
+		</div>
 
-	<!-- Top 5 검색어 -->
-	<h2>실시간 여행 트렌드 Top 5 !!</h2>
-	<div class="row">
-		<div class="col-md-3 mb-3" th:each="place, iterStat : ${top5Places}">
-			<div class="card" style="width: 18rem;">
-				<!-- 이미지 경로를 동적으로 설정 -->
-				<img th:src="@{|/img/image_${iterStat.index + 1}.jpg|}" class="card-img-top" alt="Place Image">
-				<div class="card-body">
-					<h5 class="card-title">[[${iterStat.index + 1}]]위</h5>
-					<p class="card-text">[[${place}]]</p>
-					<a th:href="@{/community}" class="btn btn-primary">리뷰보기</a>
+		<h2>전국 추천 여행지 !!</h2>
+		<div class="row">
+			<div class="col-md-3 mb-3">
+				<div class="card" style="width: 18rem;">
+					<img src="/img/seoul.jpg" class="card-img-top" alt="Seoul">
+					<div class="card-body">
+						<h5 class="card-title">서울 경복궁</h5>
+						<a th:href="@{/community}" class="btn btn-primary">리뷰보기</a>
+					</div>
 				</div>
 			</div>
-		</div>
-	</div>
-
-	<div class="main">
-		<h3>여행지 검색 하기</h3>
-		<div class="map">
-<!--			<form action="/saveMyList">-->
-				<div class="mb-3">
-					<label for="departureDate" class="form-label">떠날 날짜:</label>
-					<input type="date" id="departureDate" name="startDate" class="form-control">
+			<div class="col-md-3 mb-3">
+				<div class="card" style="width: 18rem;">
+					<img src="/img/jeju.jpg" class="card-img-top" alt="Jeju">
+					<div class="card-body">
+						<h5 class="card-title">제주 성산일출봉</h5>
+						<a th:href="@{/community}" class="btn btn-primary">리뷰보기</a>
+					</div>
 				</div>
-				<div class="mb-3">
-					<label for="arrivalDate" class="form-label">도착할 날짜:</label>
-					<input type="date" id="arrivalDate" name="endDate" class="form-control">
+			</div>
+			<div class="col-md-3 mb-3">
+				<div class="card" style="width: 18rem;">
+					<img src="/img/busan.jpg" class="card-img-top" alt="Busan">
+					<div class="card-body">
+						<h5 class="card-title">부산 해운대</h5>
+						<a th:href="@{/community}" class="btn btn-primary">리뷰보기</a>
+					</div>
 				</div>
+			</div>
+			<div class="col-md-3 mb-3">
+				<div class="card" style="width: 18rem;">
+					<img src="/img/gyeongju.jpg" class="card-img-top" alt="Gyeongju">
+					<div class="card-body">
+						<h5 class="card-title">경주 불국사</h5>
+						<a th:href="@{/community}" class="btn btn-primary">리뷰보기</a>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-3 mb-3">
+				<div class="card" style="width: 18rem;">
+					<img src="/img/gangneung.jpg" class="card-img-top" alt="Gangneung">
+					<div class="card-body">
+						<h5 class="card-title">강릉 경포대</h5>
+						<a th:href="@{/community}" class="btn btn-primary">리뷰보기</a>
+					</div>
+				</div>
+			</div>
+		<div class="main">
+			<h3>여행지 검색 하기</h3>
+			<div class="map">
 				<div class="map_search_box">
 					<input type="text" id="keyword" size="15" placeholder="검색어를 입력하세요.">
 					<button id="searchBtn">검색</button> <!--onclick="main()"-->
@@ -62,18 +82,14 @@
 					</div>
 					<div class="map_box2">
 						<ul id="myList">
-							<!--						<li class="my_list">-->
-							<!--							<p>placeName(장소이름)</p>-->
-							<!--							<p>addressName(주소)</p>-->
-							<!--						</li>-->
 						</ul>
 						<button class="save_db_btn" onclick="saveToDatabase()">저장하기</button>
 					</div>
 				</div>
-<!--			</form>-->
 		<script th:src="@{js/main.js}"></script>
 	</div>
 </div>
 </div>
+	</div>
 </body>
-</html>
+</html
